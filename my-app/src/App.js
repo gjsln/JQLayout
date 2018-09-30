@@ -2,8 +2,53 @@ import React, { Component } from 'react';
 
 import JqxGrid, { jqx } from './assets/jqwidgets-react/react_jqxgrid';
 
+import JqxLayout from './assets/jqwidgets-react/react_jqxlayout';
+
 class App extends Component {
     render() {
+        const layout = [{
+            type: 'layoutGroup',
+            orientation: 'horizontal',
+            items: [{
+                type: 'layoutGroup',
+                orientation: 'vertical',
+                width: 900,
+                items: [{
+                    type: 'documentGroup',
+                    height: 450,
+                    minHeight: 250,
+                    items: [{
+                        type: 'documentPanel',
+                        title: 'Document 1',
+                        contentContainer: 'Document1Panel'
+                    }]
+                }, {
+                    type: 'tabbedGroup',
+                    height: 250,
+                    pinnedHeight: 30,
+                    items: [{
+                        type: 'layoutPanel',
+                        title: 'Output',
+                        contentContainer: 'OutputPanel',
+                        selected: true
+                    }]
+                }]
+            },{
+                type: 'tabbedGroup',
+                width: 300,
+                minWidth: 250,
+                items: [{
+                    type: 'layoutPanel',
+                    title: 'Solution Explorer',
+                    contentContainer: 'SolutionExplorerPanel'
+                }, {
+                    type: 'layoutPanel',
+                    title: 'Properties',
+                    contentContainer: 'PropertiesPanel'
+                }]
+            }]
+        }];
+
         const source =
             {
                 datatype: 'xml',
@@ -45,12 +90,19 @@ class App extends Component {
                 { text: 'Product Details', align: 'center', name: 'ProductDetails' }
             ];   
         return (
-            <JqxGrid 
-                width={850} source={dataAdapter} columns={columns}
-                pageable={true }autoheight={true} sortable={true}
-                altrows={true} enabletooltips={true} editable={true}
-                selectionmode={'multiplecellsadvanced'} columngroups={columngroups}
-            />
+            <JqxLayout width={1200} height={700} layout={layout}>
+                <div data-container='Document1Panel'>Document 1 content
+                    <JqxGrid 
+                        width={850} source={dataAdapter} columns={columns}
+                        pageable={true }autoheight={true} sortable={true}
+                        altrows={true} enabletooltips={true} editable={true}
+                        selectionmode={'multiplecellsadvanced'} columngroups={columngroups}
+                    />
+                </div>
+                <div data-container='OutputPanel'></div>
+                <div data-container='SolutionExplorerPanel'></div>
+                <div data-container='PropertiesPanel'>List of properties</div>
+            </JqxLayout>
         );
     }
 }
