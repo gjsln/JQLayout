@@ -4,8 +4,66 @@ import JqxGrid, { jqx } from './assets/jqwidgets-react/react_jqxgrid';
 
 import JqxLayout from './assets/jqwidgets-react/react_jqxlayout';
 
+import JqxToolBar from './assets/jqwidgets-react/react_jqxtoolbar';
+
 class App extends Component {
     render() {
+        let tools = 'toggleButton toggleButton toggleButton | toggleButton | dropdownlist combobox | input | custom';
+        let initTools = (type, index, tool, menuToolIninitialization) => {
+            let icon = document.createElement('div');
+            if (type === 'toggleButton') {
+                icon.className = 'jqx-editor-toolbar-icon jqx-editor-toolbar-icon-arctic buttonIcon ';
+            }
+            switch (index) {
+                case 0:
+                    icon.className += 'jqx-editor-toolbar-icon-bold jqx-editor-toolbar-icon-bold-arctic';
+                    icon.setAttribute('title', 'Bold');
+                    tool[0].appendChild(icon);
+                    break;
+                case 1:
+                    icon.className += 'jqx-editor-toolbar-icon-italic jqx-editor-toolbar-icon-italic-arctic';
+                    icon.setAttribute('title', 'Italic');
+                    tool[0].appendChild(icon);
+                    break;
+                case 2:
+                    icon.className += 'jqx-editor-toolbar-icon-underline jqx-editor-toolbar-icon-underline-arctic';
+                    icon.setAttribute('title', 'Underline');
+                    tool[0].appendChild(icon);
+                    break;
+                case 3:
+                    tool.jqxToggleButton({ width: 80, toggled: true });
+                    tool[0].innerText = 'Enabled';
+                    tool.on('click', () =>
+                    {
+                        let toggled = tool.jqxToggleButton('toggled');
+                        if (toggled)
+                        {
+                            tool.text('Enabled');
+                        } else
+                        {
+                            tool.text('Disabled');
+                        }
+                    });
+                    break;
+                case 4:
+                    tool.jqxDropDownList({ width: 130, source: ["<span style='font-family: Courier New;'>Courier New</span>", "<span style='font-family: Times New Roman;'>Times New Roman</span>", "<span style='font-family: Verdana;'>Verdana</span>"], selectedIndex: 1 });
+                    break;
+                case 5:
+                    tool.jqxComboBox({ width: 50, source: [8, 9, 10, 11, 12, 14, 16, 18, 20], selectedIndex: 3 });
+                    break;
+                case 6:
+                    tool.jqxInput({ width: 200, placeHolder: 'Type here to search...' });
+                    break;
+                case 7:
+                    let button = document.createElement('div');
+                    button.innerHTML = "<img src='../../../../images/administrator.png' title='Custom tool' />";
+                    tool[0].appendChild(button);
+                    tool.jqxButton({ height: 15 });
+                    break;
+                default:
+                    break;
+            }
+        }
         const layout = [{
             type: 'layoutGroup',
             orientation: 'horizontal',
@@ -14,6 +72,16 @@ class App extends Component {
                 orientation: 'vertical',
                 width: 900,
                 items: [{
+                    type: 'documentGroup',
+                    height: 35,
+                    minHeight: 35,
+                    items: [{
+                        type: 'documentPanel',
+                        title: 'Toolbar 1',
+                        contentContainer: 'Toolbar1Panel'
+                    }]
+                },
+                {
                     type: 'documentGroup',
                     height: 450,
                     minHeight: 250,
@@ -90,19 +158,27 @@ class App extends Component {
                 { text: 'Product Details', align: 'center', name: 'ProductDetails' }
             ];   
         return (
-            <JqxLayout width={1200} height={700} layout={layout}>
-                <div data-container='Document1Panel'>Document 1 content
-                    <JqxGrid 
-                        width={850} source={dataAdapter} columns={columns}
-                        pageable={true }autoheight={true} sortable={true}
-                        altrows={true} enabletooltips={true} editable={true}
-                        selectionmode={'multiplecellsadvanced'} columngroups={columngroups}
-                    />
-                </div>
-                <div data-container='OutputPanel'></div>
-                <div data-container='SolutionExplorerPanel'></div>
-                <div data-container='PropertiesPanel'>List of properties</div>
-            </JqxLayout>
+            <div>
+                <JqxLayout width={1200} height={700} layout={layout}>
+                    <div data-container='Toolbar1Panel'>
+                    <JqxToolBar
+                        width={800} height={35}
+                        initTools={initTools} tools={tools}
+                        />
+                    </div>
+                    <div data-container='Document1Panel'>Document 1 content
+                        <JqxGrid 
+                            width={900} source={dataAdapter} columns={columns}
+                            pageable={true }autoheight={true} sortable={true}
+                            altrows={true} enabletooltips={true} editable={true}
+                            selectionmode={'multiplecellsadvanced'} columngroups={columngroups}
+                        />
+                    </div>
+                    <div data-container='OutputPanel'></div>
+                    <div data-container='SolutionExplorerPanel'></div>
+                    <div data-container='PropertiesPanel'>List of properties</div>
+                </JqxLayout>
+            </div>
         );
     }
 }
